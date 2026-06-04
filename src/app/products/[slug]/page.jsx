@@ -160,10 +160,10 @@ export default function ProductDetailPage() {
 
    <div
     ref={contentRef}
-    className="max-w-7xl mx-auto px-6 pt-36 pb-24 space-y-24"
+    className="max-w-7xl mx-auto px-4 sm:px-6 pt-28 sm:pt-36 pb-16 sm:pb-24 space-y-16 sm:space-y-24"
    >
     {/* UPPER MATRIX: Core Purchasing Zone */}
-    <div className="grid lg:grid-cols-[1fr_1fr] gap-16 items-start">
+    <div className="grid lg:grid-cols-[1fr_1fr] gap-10 sm:gap-16 items-start">
      {/* Left Column: Image */}
      <div className="lg:sticky lg:top-32 w-full aspect-[4/5] bg-[#111111] border border-[#1C1A16] relative overflow-hidden group rounded-sm shadow-xl z-10 stagger-reveal">
       {product.images && product.images[0] ? (
@@ -183,12 +183,12 @@ export default function ProductDetailPage() {
      </div>
 
      {/* Right Column: Checkout Controls */}
-     <div className="space-y-10 lg:py-4">
+     <div className="space-y-8 sm:space-y-10 lg:py-4">
       <div className="space-y-4 border-b border-[#1C1A16] pb-8 stagger-reveal">
        <span className="text-[#C9A84C] tracking-[0.4em] uppercase text-[10px] font-medium block">
         {product.category || "Signature Collection"}
        </span>
-       <h1 className="font-display text-[clamp(36px,4vw,52px)] leading-[1.1] text-[#F5EDD6]">
+       <h1 className="font-display text-[clamp(30px,8vw,52px)] md:text-[clamp(36px,4vw,52px)] leading-[1.1] text-[#F5EDD6]">
         {product.name}
        </h1>
 
@@ -215,13 +215,13 @@ export default function ProductDetailPage() {
         <span className="text-[#9A9485] text-[10px] uppercase tracking-[0.2em] block font-medium">
          Select Allocation Tier
         </span>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
          {weightsToDisplay.map((w) => (
           <button
            key={w}
            type="button"
            onClick={() => setSelectedWeight(w)}
-           className={`px-6 py-3 text-[11px] uppercase tracking-widest transition-all duration-300 border rounded-sm ${
+           className={`px-4 sm:px-6 py-2.5 sm:py-3 text-[11px] uppercase tracking-widest transition-all duration-300 border rounded-sm ${
             selectedWeight === w
              ? "bg-[#C9A84C] border-[#C9A84C] text-[#0A0A0A] font-semibold shadow-[0_0_15px_rgba(201,168,76,0.15)]"
              : "bg-transparent border-[#1C1A16] text-[#9A9485] hover:border-[#C9A84C] hover:text-[#C9A84C]"
@@ -338,7 +338,7 @@ export default function ProductDetailPage() {
       )}
 
       {activeTab === "reviews" && (
-       <div className="animate-in fade-in duration-500 grid md:grid-cols-[1fr_2fr] gap-12 pt-8">
+       <div className="animate-in fade-in duration-500 grid md:grid-cols-[1fr_2fr] gap-8 sm:gap-12 pt-8">
         {/* LEFT COLUMN: Rating Chart */}
         <div className="space-y-6">
          <h3 className="text-[#C9A84C] text-[10px] uppercase tracking-[0.2em] font-medium">
@@ -374,11 +374,11 @@ export default function ProductDetailPage() {
         {/* RIGHT COLUMN: Top 6 Reviews */}
         <div className="space-y-8">
          {product.reviews && product.reviews.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
            {product.reviews.slice(0, 6).map((review, idx) => (
             <div
              key={review.id || idx}
-             className="bg-[#111111]/40 border border-[#1C1A16] p-6 rounded-sm space-y-3"
+             className="bg-[#111111]/40 border border-[#1C1A16] p-4 sm:p-6 rounded-sm space-y-3"
             >
              <div className="flex justify-between items-center">
               <span className="font-display italic text-[#F5EDD6] text-md">

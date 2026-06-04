@@ -282,12 +282,15 @@ export default function CheckoutPage() {
 
  return (
   <main
-   className="bg-[#0A0A0A] min-h-screen text-[#F5EDD6] pt-32 pb-24"
+   className="bg-[#0A0A0A] min-h-screen text-[#F5EDD6] pt-24 sm:pt-32 pb-16 sm:pb-24"
    suppressHydrationWarning
   >
    {/* Dynamic Progress Header */}
-   <header className="max-w-3xl mx-auto px-6 mb-16" suppressHydrationWarning>
-    <div className="flex items-center justify-center gap-4 font-ui text-[11px] tracking-[0.2em] uppercase font-medium">
+   <header
+    className="max-w-3xl mx-auto px-4 sm:px-6 mb-12 sm:mb-16"
+    suppressHydrationWarning
+   >
+    <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 font-ui text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-medium text-center">
      <span
       className={`${step >= 1 ? "text-[#C9A84C]" : "text-[#4A4640]"} transition-colors`}
      >
@@ -313,18 +316,18 @@ export default function CheckoutPage() {
    </header>
 
    {/* Main Layout Grid */}
-   <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-[1fr_400px] gap-16 items-start">
+   <div className="max-w-6xl mx-auto px-4 sm:px-6 grid lg:grid-cols-[1fr_400px] gap-10 sm:gap-16 items-start">
     {/* LEFT COLUMN: Dynamic Steps */}
     <div className="w-full">
      {/* STEP 1: DELIVERY */}
      {step === 1 && (
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-       <h2 className="font-display text-3xl text-[#F5EDD6] mb-8 italic">
+       <h2 className="font-display text-2xl sm:text-3xl text-[#F5EDD6] mb-8 italic">
         Delivery Details
        </h2>
        <form onSubmit={handleProceedToPayment} className="space-y-8">
         {/* Floating Label Grid */}
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
          <FloatingInput
           label="First Name"
           name="firstName"
@@ -341,7 +344,7 @@ export default function CheckoutPage() {
          />
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
          <FloatingInput
           label="Email Address"
           type="email"
@@ -374,7 +377,7 @@ export default function CheckoutPage() {
          onChange={handleInputChange}
         />
 
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
          <FloatingInput
           label="Pincode"
           name="pincode"
@@ -421,13 +424,13 @@ export default function CheckoutPage() {
         >
          <CaretRight size={20} className="rotate-180" />
         </button>
-        <h2 className="font-display text-3xl text-[#F5EDD6] italic">
+        <h2 className="font-display text-2xl sm:text-3xl text-[#F5EDD6] italic">
          Secure Payment
         </h2>
        </div>
 
-       <div className="bg-[#141414] border border-[#C9A84C]/20 p-8 rounded-sm mb-8">
-        <div className="flex items-center justify-between mb-6">
+       <div className="bg-[#141414] border border-[#C9A84C]/20 p-6 sm:p-8 rounded-sm mb-8">
+        <div className="flex items-start sm:items-center justify-between gap-4 mb-6 flex-col sm:flex-row">
          <div className="flex items-center gap-2 text-[#F5EDD6]">
           <LockKey size={20} className="text-[#C9A84C]" />
           <span className="font-ui text-sm uppercase tracking-widest font-medium">
@@ -456,7 +459,7 @@ export default function CheckoutPage() {
        </div>
 
        {/* Delivery Summary Block */}
-       <div className="border border-[#4A4640] p-6 rounded-sm">
+       <div className="border border-[#4A4640] p-4 sm:p-6 rounded-sm">
         <h3 className="font-ui text-[11px] tracking-[0.2em] uppercase text-[#9A9485] mb-4">
          Delivery To
         </h3>
@@ -476,7 +479,7 @@ export default function CheckoutPage() {
      {step === 3 && (
       <div
        ref={confirmationRef}
-       className="flex flex-col items-center justify-center text-center py-12"
+       className="flex flex-col items-center justify-center text-center py-10 sm:py-12"
       >
        <svg
         ref={checkmarkRef}
@@ -509,7 +512,7 @@ export default function CheckoutPage() {
        <span className="font-ui text-[11px] tracking-[0.4em] uppercase text-[#C9A84C] mb-4 block">
         Order Successful
        </span>
-       <h2 className="font-display text-4xl md:text-5xl text-[#F5EDD6] mb-4 italic">
+       <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-[#F5EDD6] mb-4 italic">
         Thank You for Your Order.
        </h2>
        <p className="font-ui text-[16px] text-[#9A9485] mb-8">
@@ -517,7 +520,7 @@ export default function CheckoutPage() {
         to <span className="text-[#F5EDD6]">{formData.email}</span>.
        </p>
 
-       <div className="font-ui border-y border-[#C9A84C]/20 py-6 mb-12 w-full max-w-md">
+       <div className="font-ui border-y border-[#C9A84C]/20 py-6 mb-10 sm:mb-12 w-full max-w-md">
         <span className="text-[#9A9485] text-xs uppercase tracking-widest block mb-2">
          Order Number
         </span>

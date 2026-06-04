@@ -30,19 +30,19 @@ export default function BrandStory() {
  }, []);
 
  return (
-  <section className="brand-story py-24 bg-rein-black border-y border-rein-gold-dim/10 w-full overflow-hidden">
-   <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-    <div className="relative h-[500px] flex items-center justify-center w-full">
-     <div className="absolute w-[80%] h-[80%] bg-rein-surface border border-rein-gold-dim/20 -rotate-3 z-10 shadow-2xl flex items-center justify-center text-rein-gray-mid font-ui text-sm">
+  <section className="brand-story py-16 sm:py-24 bg-rein-black border-y border-rein-gold-dim/10 w-full overflow-hidden">
+   <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 items-center">
+    <div className="relative h-[320px] sm:h-[420px] lg:h-[500px] flex items-center justify-center w-full">
+     <div className="absolute w-[78%] h-[78%] bg-rein-surface border border-rein-gold-dim/20 -rotate-3 z-10 shadow-2xl flex items-center justify-center text-rein-gray-mid font-ui text-sm">
       [Brand Image 1]
      </div>
-     <div className="absolute w-[70%] h-[75%] bg-rein-charcoal border border-rein-gold-primary/30 rotate-3 translate-x-12 translate-y-8 z-20 shadow-2xl flex items-center justify-center text-rein-gray-mid font-ui text-sm">
+     <div className="absolute w-[70%] h-[75%] bg-rein-charcoal border border-rein-gold-primary/30 rotate-3 translate-x-6 sm:translate-x-12 translate-y-4 sm:translate-y-8 z-20 shadow-2xl flex items-center justify-center text-rein-gray-mid font-ui text-sm">
       [Brand Image 2]
      </div>
     </div>
 
-    <div className="flex flex-col space-y-6">
-     <h2 className="font-display font-bold text-4xl md:text-[48px] text-rein-cream leading-tight">
+    <div className="flex flex-col space-y-6 text-center lg:text-left">
+     <h2 className="font-display font-bold text-3xl sm:text-4xl md:text-[48px] text-rein-cream leading-tight">
       The Art of the <br /> Exceptional Snack.
      </h2>
      <div className="space-y-4 font-ui font-light text-[17px] text-rein-gray-light leading-[1.85]">
@@ -63,7 +63,7 @@ export default function BrandStory() {
       </p>
      </div>
 
-     <div className="grid grid-cols-3 gap-6 pt-8 border-t border-rein-gold-dim/20 mt-8">
+     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-rein-gold-dim/20 mt-8">
       <div>
        <div className="font-accent font-semibold text-[40px] text-rein-gold-primary flex items-center">
         <span className="stat-counter" data-target="10000">

@@ -37,15 +37,19 @@ export default function RootLayout({ children }) {
    data-scroll-behavior="smooth"
    suppressHydrationWarning
   >
+   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a0a0a" />
+   </head>
    <body
     className="bg-rein-black text-rein-cream font-ui antialiased selection:bg-rein-gold-primary selection:text-rein-black relative min-h-screen overflow-x-hidden"
     suppressHydrationWarning
    >
-    {/* Ambient Overhead Glow */}
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-rein-gold-primary/5 rounded-full blur-[140px] pointer-events-none z-0" />
+    {/* Ambient Overhead Glow (responsive sizes for small screens) */}
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[320px] sm:w-[600px] h-[200px] sm:h-[300px] bg-rein-gold-primary/5 rounded-full blur-[140px] pointer-events-none z-0" />
 
     {/* Luxury Noise Overlay */}
-    <div className="fixed inset-0 bg-luxury-grain pointer-events-none z-50 mix-blend-overlay" />
+    <div className="fixed inset-0 bg-luxury-grain pointer-events-none z-10 mix-blend-overlay" />
 
     {/* Handles conditional Navbar rendering */}
     <LayoutWrapper>{children}</LayoutWrapper>

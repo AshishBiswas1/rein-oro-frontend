@@ -35,12 +35,14 @@ export default function ReviewForm({ productId }) {
  return (
   <form
    onSubmit={handleSubmit}
-   className="p-6 bg-[#111111] border border-[#1C1A16] mt-8"
+   className="p-4 sm:p-6 bg-[#111111] border border-[#1C1A16] mt-8"
   >
-   <h3 className="text-[#F5EDD6] font-display text-lg mb-4">Write a Review</h3>
+   <h3 className="text-[#F5EDD6] font-display text-base sm:text-lg mb-4">
+    Write a Review
+   </h3>
 
    {/* Star Rating Selection */}
-   <div className="flex gap-2 mb-4">
+   <div className="flex gap-2 mb-4 flex-wrap">
     {[1, 2, 3, 4, 5].map((star) => (
      <button
       key={star}
@@ -48,13 +50,13 @@ export default function ReviewForm({ productId }) {
       onClick={() => setRating(star)}
       className={star <= rating ? "text-[#C9A84C]" : "text-[#4A4640]"}
      >
-      <Star size={24} weight="fill" />
+      <Star size={22} weight="fill" />
      </button>
     ))}
    </div>
 
    <textarea
-    className="w-full bg-[#0A0A0A] border border-[#1C1A16] p-3 text-[#F5EDD6] mb-4"
+    className="w-full bg-[#0A0A0A] border border-[#1C1A16] p-3 text-[#F5EDD6] mb-4 min-h-[120px]"
     placeholder="Share your experience..."
     value={comment}
     onChange={(e) => setComment(e.target.value)}
@@ -63,7 +65,7 @@ export default function ReviewForm({ productId }) {
 
    <button
     type="submit"
-    className="bg-[#C9A84C] text-[#0A0A0A] px-6 py-2 uppercase text-[11px] font-bold tracking-widest"
+    className="bg-[#C9A84C] text-[#0A0A0A] px-6 py-3 uppercase text-[11px] font-bold tracking-widest w-full sm:w-auto"
    >
     {status === "Idle" ? "Post Review" : status}
    </button>

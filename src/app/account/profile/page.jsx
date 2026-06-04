@@ -82,13 +82,13 @@ export default function ProfilePage() {
   <main className="min-h-screen bg-[#0A0A0A] text-[#F5EDD6] pb-24">
    <Navbar />
 
-   <div className="max-w-7xl mx-auto px-6 pt-32">
-    <header className="mb-16 border-b border-[#1C1A16] pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+   <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-24 sm:pt-32">
+    <header className="mb-12 sm:mb-16 border-b border-[#1C1A16] pb-8 sm:pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
      <div>
       <span className="text-[#C9A84C] tracking-[0.4em] uppercase text-[11px] mb-4 block font-medium">
        Client Profile
       </span>
-      <h1 className="font-display text-[clamp(40px,5vw,56px)] leading-none">
+      <h1 className="font-display text-[clamp(32px,8vw,56px)] leading-none">
        Welcome, <br className="md:hidden" />
        <span className="italic text-[#E8C97A]">{userProfile.name}</span>
       </h1>
@@ -99,10 +99,10 @@ export default function ProfilePage() {
      </div>
     </header>
 
-    <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-start">
+    <div className="grid lg:grid-cols-[1fr_2fr] gap-8 sm:gap-12 items-start">
      {/* Left Column: Actions */}
      <div className="space-y-4">
-      <div className="bg-[#111111] border border-[#1C1A16] p-8">
+      <div className="bg-[#111111] border border-[#1C1A16] p-6 sm:p-8">
        <h3 className="text-[#C9A84C] font-bold uppercase tracking-[0.2em] text-[11px] mb-6">
         Account Settings
        </h3>
@@ -138,8 +138,8 @@ export default function ProfilePage() {
      {/* Right Column: Dashboard Data */}
      <div className="space-y-12">
       {/* Quick Stats */}
-      <div className="grid sm:grid-cols-2 gap-4">
-       <div className="border border-[#1C1A16] p-6 bg-[#0A0A0A]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+       <div className="border border-[#1C1A16] p-5 sm:p-6 bg-[#0A0A0A]">
         <div className="text-[#9A9485] text-[10px] uppercase tracking-widest mb-2">
          Total Orders
         </div>
@@ -147,7 +147,7 @@ export default function ProfilePage() {
          {orders.length}
         </div>
        </div>
-       <div className="border border-[#1C1A16] p-6 bg-[#0A0A0A]">
+       <div className="border border-[#1C1A16] p-5 sm:p-6 bg-[#0A0A0A]">
         <div className="text-[#9A9485] text-[10px] uppercase tracking-widest mb-2">
          Member Since
         </div>
@@ -160,8 +160,10 @@ export default function ProfilePage() {
       </div>
 
       {/* My Reviews Section */}
-      <div className="border border-[#1C1A16] p-8">
-       <h2 className="font-display text-2xl text-[#F5EDD6] mb-8">My Reviews</h2>
+      <div className="border border-[#1C1A16] p-6 sm:p-8">
+       <h2 className="font-display text-xl sm:text-2xl text-[#F5EDD6] mb-8">
+        My Reviews
+       </h2>
        {reviews.length === 0 ? (
         <p className="text-[#9A9485] text-sm">No reviews submitted yet.</p>
        ) : (
@@ -187,9 +189,9 @@ export default function ProfilePage() {
       </div>
 
       {/* Recent Acquisitions */}
-      <div className="border border-[#1C1A16] p-8">
+      <div className="border border-[#1C1A16] p-6 sm:p-8">
        <div className="flex justify-between items-center mb-8">
-        <h2 className="font-display text-2xl text-[#F5EDD6]">
+        <h2 className="font-display text-xl sm:text-2xl text-[#F5EDD6]">
          Recent Acquisitions
         </h2>
        </div>

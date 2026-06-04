@@ -12,14 +12,14 @@ export default function ProductCard({ product }) {
  const formattedPrice = basePrice.toFixed(2);
 
  return (
-  <div className="group bg-[#0E0E0E] border border-[#C9A84C]/10 rounded-sm p-4 hover:border-[#C9A84C]/30 transition-all duration-300">
+  <div className="group flex h-full flex-col bg-rein-charcoal border border-rein-gold-primary/10 rounded-lg sm:rounded-sm p-3 sm:p-4 hover:border-rein-gold-primary/30 transition-all duration-300">
    {/* Using slug if available, falling back to ID for safety */}
    <Link
     href={`/products/${product.slug || product.id || product._id}`}
-    className="block cursor-pointer"
+    className="block h-full cursor-pointer"
     suppressHydrationWarning
    >
-    <div className="relative aspect-square w-full mb-4 bg-[#1C1A16] rounded-sm overflow-hidden flex items-center justify-center">
+    <div className="relative aspect-[4/5] sm:aspect-square w-full mb-3 sm:mb-4 bg-rein-surface rounded-md sm:rounded-sm overflow-hidden flex items-center justify-center">
      <Image
       src={product.images?.[0] || "/placeholder.jpg"}
       alt={product.name || "Product"}
@@ -30,11 +30,13 @@ export default function ProductCard({ product }) {
      />
     </div>
 
-    <div className="space-y-2">
-     <h3 className="font-display italic text-lg text-[#F5EDD6] group-hover:text-[#E8C97A] transition-colors line-clamp-1">
+    <div className="space-y-1.5 sm:space-y-2">
+     <h3 className="font-display italic text-base sm:text-lg leading-snug text-rein-cream group-hover:text-rein-gold-light transition-colors line-clamp-1">
       {product.name}
      </h3>
-     <p className="font-accent text-[#C9A84C] text-md">₹{formattedPrice}</p>
+     <p className="font-accent text-rein-gold-primary text-sm sm:text-md">
+      ₹{formattedPrice}
+     </p>
     </div>
    </Link>
   </div>

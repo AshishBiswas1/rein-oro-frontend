@@ -17,8 +17,8 @@ export default function SuccessPage() {
  if (!mounted) return null;
 
  return (
-  <div className="min-h-screen bg-rein-black flex items-center justify-center px-6">
-   <div className="max-w-2xl w-full bg-rein-charcoal border border-rein-gold-dim/20 p-12 text-center shadow-2xl relative overflow-hidden">
+  <div className="min-h-screen bg-rein-black flex items-center justify-center px-4 sm:px-6 py-12">
+   <div className="max-w-2xl w-full bg-rein-charcoal border border-rein-gold-dim/20 p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden">
     {/* Decorative Background Elements */}
     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-rein-gold-primary to-transparent opacity-50" />
 
@@ -33,16 +33,16 @@ export default function SuccessPage() {
      </div>
     </div>
 
-    <h1 className="font-display text-4xl md:text-5xl text-rein-cream mb-4">
+    <h1 className="font-display text-3xl sm:text-4xl md:text-5xl text-rein-cream mb-4">
      Payment Successful
     </h1>
 
-    <p className="font-ui text-rein-gray-light text-lg mb-8 tracking-wide">
+    <p className="font-ui text-rein-gray-light text-base sm:text-lg mb-8 tracking-wide">
      Welcome to the world of Rein Oro. Your luxury order has been received and
      is being prepared with the utmost care.
     </p>
 
-    <div className="inline-block border-t border-b border-rein-gold-dim/20 py-4 mb-10">
+    <div className="inline-block border-t border-b border-rein-gold-dim/20 py-4 mb-8 sm:mb-10">
      <p className="font-ui text-sm text-rein-gray-mid uppercase tracking-[0.2em]">
       A confirmation email will be sent shortly.
      </p>

@@ -2,12 +2,12 @@ import Link from "next/link";
 
 export default function ShippingPolicy() {
  return (
-  <main className="min-h-screen bg-rein-black text-rein-cream pt-32 pb-24 px-6">
-   <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+  <main className="min-h-screen bg-rein-black text-rein-cream pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6">
+   <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-16 items-start">
     {/* Sticky Luxury Sidebar */}
     <aside className="lg:col-span-3">
      <div className="sticky top-32">
-      <h3 className="font-display text-2xl text-rein-cream mb-8 italic">
+      <h3 className="font-display text-xl sm:text-2xl text-rein-cream mb-8 italic">
        Legal & Policies
       </h3>
       <nav className="flex flex-col space-y-6 font-ui text-[12px] uppercase tracking-[0.2em]">
@@ -36,7 +36,7 @@ export default function ShippingPolicy() {
 
     {/* Policy Content */}
     <div className="lg:col-span-9 animate-in fade-in slide-in-from-bottom-4 duration-700">
-     <h1 className="font-display text-4xl md:text-5xl mb-6 italic">
+     <h1 className="font-display text-3xl sm:text-4xl md:text-5xl mb-6 italic">
       Shipping <span className="text-rein-gold-primary">&</span> Dispatch
      </h1>
      <p className="font-ui text-rein-gray-light text-sm leading-relaxed mb-12 max-w-2xl">

@@ -36,7 +36,7 @@ export default function AccountPage() {
  };
 
  return (
-  <main className="min-h-screen bg-[#0A0A0A] flex flex-col md:flex-row">
+  <main className="min-h-screen bg-[#0A0A0A] flex flex-col md:flex-row overflow-hidden">
    {/* Left Side: Brand Imagery */}
    <div className="hidden md:flex w-1/2 relative items-center justify-center border-r border-[#1C1A16] bg-[#0E0E0E]">
     <div className="absolute inset-0 bg-[url('/images/story-1.png')] bg-cover bg-center opacity-20 grayscale" />
@@ -54,7 +54,7 @@ export default function AccountPage() {
    </div>
 
    {/* Right Side: The Form */}
-   <div className="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-24">
+   <div className="w-full md:w-1/2 flex items-center justify-center p-4 sm:p-12 lg:p-24">
     <div className="w-full max-w-md">
      <Link
       href="/"
@@ -66,11 +66,11 @@ export default function AccountPage() {
      <span className="text-[#C9A84C] tracking-[0.4em] uppercase text-[11px] mb-4 block font-medium">
       {isLogin ? "Client Portal" : "Join The Registry"}
      </span>
-     <h1 className="font-display text-[40px] text-[#F5EDD6] mb-10 leading-tight">
+     <h1 className="font-display text-[34px] sm:text-[40px] text-[#F5EDD6] mb-8 sm:mb-10 leading-tight">
       {isLogin ? "Welcome Back." : "Create Account."}
      </h1>
 
-     <form onSubmit={handleSubmit} className="space-y-8">
+     <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
       {!isLogin && (
        <FloatingInput
         label="Full Name"

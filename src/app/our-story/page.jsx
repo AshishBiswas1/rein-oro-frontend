@@ -43,7 +43,7 @@ export default function OurStoryPage() {
    <Navbar />
 
    {/* Hero Section with Cinematic Fixed Background */}
-   <section className="relative h-[85vh] flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+   <section className="relative min-h-[70vh] sm:h-[85vh] flex flex-col items-center justify-center text-center px-4 sm:px-6 py-24 sm:py-0 overflow-hidden">
     {/* Replace src with your actual hero background image */}
     <div className="absolute inset-0 bg-[url('/images/story-hero-bg.jpg')] bg-cover bg-center bg-fixed opacity-30" />
     <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/20 via-transparent to-[#0A0A0A]" />
@@ -52,7 +52,7 @@ export default function OurStoryPage() {
      <span className="text-[#C9A84C] tracking-[0.4em] uppercase text-[11px] mb-8 block font-medium">
       Our Legacy
      </span>
-     <h1 className="font-display text-[clamp(48px,8vw,84px)] leading-[1.05]">
+     <h1 className="font-display text-[clamp(36px,10vw,84px)] leading-[1.05]">
       Purity Crowned <br />{" "}
       <span className="italic text-[#E8C97A]">in Gold.</span>
      </h1>
@@ -60,11 +60,14 @@ export default function OurStoryPage() {
    </section>
 
    {/* The Narrative Section: Asymmetrical & Sticky */}
-   <section ref={storyRef} className="py-32 px-6 max-w-7xl mx-auto">
-    <div className="grid lg:grid-cols-[40%_1fr] gap-20 items-start">
+   <section
+    ref={storyRef}
+    className="py-20 sm:py-32 px-4 sm:px-6 max-w-7xl mx-auto"
+   >
+    <div className="grid lg:grid-cols-[40%_1fr] gap-12 sm:gap-20 items-start">
      {/* Left Column: Sticky Title */}
-     <div className="lg:sticky lg:top-32 space-y-8 reveal-item">
-      <h2 className="font-display text-[clamp(40px,4vw,56px)] leading-[1.1] text-[#F5EDD6]">
+     <div className="lg:sticky lg:top-32 space-y-8 reveal-item text-center lg:text-left">
+      <h2 className="font-display text-[clamp(32px,6vw,56px)] leading-[1.1] text-[#F5EDD6]">
        The Art of the <br />
        <span className="italic text-[#C9A84C]">Exceptional Snack</span>
       </h2>
@@ -82,7 +85,7 @@ export default function OurStoryPage() {
        </p>
 
        {/* Editorial Parallax Image */}
-       <div className="parallax-container relative h-[500px] w-full overflow-hidden border border-[#1C1A16]">
+       <div className="parallax-container relative h-[320px] sm:h-[420px] lg:h-[500px] w-full overflow-hidden border border-[#1C1A16]">
         {/* Ensure you have an image at public/images/story-1.png */}
         <div className="parallax-img absolute inset-[-20%] w-[140%] h-[140%]">
          <Image
@@ -108,8 +111,8 @@ export default function OurStoryPage() {
    </section>
 
    {/* Stats Section: Certificate of Authenticity Style */}
-   <section className="py-24 border-y border-[#1C1A16] bg-gradient-to-b from-[#0c0c0c] to-[#0A0A0A]">
-    <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-16">
+   <section className="py-16 sm:py-24 border-y border-[#1C1A16] bg-gradient-to-b from-[#0c0c0c] to-[#0A0A0A]">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-16">
      <StatCounter target={10000} label="Happy Customers" suffix="+" />
      <StatCounter target={50} label="Flavors Crafted" suffix="+" />
      <StatCounter target={100} label="Naturally Sourced" suffix="%" />
@@ -148,10 +151,10 @@ function StatCounter({ target, label, suffix = "" }) {
  }, [target, suffix]);
 
  return (
-  <div className="border-l border-[#C9A84C]/30 pl-8 flex flex-col justify-center">
+  <div className="border-l border-[#C9A84C]/30 pl-6 sm:pl-8 flex flex-col justify-center">
    <div
     ref={counterRef}
-    className="font-display text-[56px] text-[#F5EDD6] leading-none mb-3"
+    className="font-display text-[44px] sm:text-[56px] text-[#F5EDD6] leading-none mb-3"
     suppressHydrationWarning
    >
     0

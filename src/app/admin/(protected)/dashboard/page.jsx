@@ -86,23 +86,23 @@ export default function AdminDashboard() {
  ];
 
  return (
-  <div className="space-y-10">
+  <div className="space-y-8 sm:space-y-10">
    {/* Dashboard Section Title */}
    <div>
     <span className="text-[#C9A84C] tracking-[0.4em] uppercase text-[10px] mb-2 block font-medium">
      Real-time Intelligence
     </span>
-    <h1 className="text-4xl text-[#F5EDD6] font-display italic">
+    <h1 className="text-3xl sm:text-4xl text-[#F5EDD6] font-display italic">
      Store Overview
     </h1>
    </div>
 
    {/* Responsive 4-Column KPI Grid */}
-   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
     {kpiList.map((kpi, idx) => (
      <div
       key={idx}
-      className="bg-[#111111] border border-[#1C1A16] p-6 rounded-sm relative group hover:border-[#C9A84C]/30 transition-all duration-300"
+      className="bg-[#111111] border border-[#1C1A16] p-5 sm:p-6 rounded-sm relative group hover:border-[#C9A84C]/30 transition-all duration-300"
      >
       {/* Ambient Corner Glow accent */}
       <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-[#C9A84C]/5 to-transparent rounded-tr-sm pointer-events-none" />
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
        </div>
       </div>
 
-      <h3 className="text-3xl text-[#F5EDD6] font-display tracking-tight mb-1">
+      <h3 className="text-2xl sm:text-3xl text-[#F5EDD6] font-display tracking-tight mb-1">
        {kpi.value}
       </h3>
       <p className="text-[#4A4640] text-[11px] tracking-wide font-ui">
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
    </div>
 
    {/* Decorative Brand Spacer Block */}
-   <div className="w-full h-[150px] border border-dashed border-[#1C1A16] flex items-center justify-center rounded-sm">
+   <div className="w-full min-h-[120px] sm:h-[150px] border border-dashed border-[#1C1A16] flex items-center justify-center rounded-sm px-4 text-center">
     <p className="text-[#4A4640] font-ui text-xs uppercase tracking-[0.3em]">
      Ready for system expansions (Graphs & Log Stream Counters)
     </p>

@@ -99,19 +99,19 @@ export default function GiftingPage() {
  return (
   <main
    ref={containerRef}
-   className="min-h-screen bg-[#0A0A0A] text-[#F5EDD6] pt-32 pb-24 px-6"
+   className="min-h-screen bg-[#0A0A0A] text-[#F5EDD6] pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6"
   >
    <div className="max-w-7xl mx-auto">
     {/* HERO SECTION */}
-    <section className="grid lg:grid-cols-2 gap-16 items-center mb-32">
+    <section className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center mb-20 sm:mb-32">
      <div className="order-2 lg:order-1">
       <span className="gifting-hero-text text-[#C9A84C] tracking-[0.4em] uppercase text-[11px] mb-6 block font-medium">
        The Art of Giving
       </span>
-      <h1 className="gifting-hero-text font-display text-[clamp(40px,5vw,72px)] leading-[1.1] mb-8">
+      <h1 className="gifting-hero-text font-display text-[clamp(34px,9vw,72px)] leading-[1.1] mb-6 sm:mb-8">
        Curated <span className="italic text-[#E8C97A]">Elegance.</span>
       </h1>
-      <p className="gifting-hero-text font-ui text-[#9A9485] leading-relaxed max-w-md mb-12">
+      <p className="gifting-hero-text font-ui text-[#9A9485] text-sm sm:text-base leading-relaxed max-w-md mb-10 sm:mb-12">
        Whether you are honoring a lifelong partnership, celebrating a union, or
        expressing gratitude to valued clients, a Rein Oro vault is the ultimate
        gesture of refined taste.
@@ -136,20 +136,20 @@ export default function GiftingPage() {
     </section>
 
     {/* TIERS GRID */}
-    <section className="grid md:grid-cols-3 gap-8 mb-32">
+    <section className="grid md:grid-cols-3 gap-6 sm:gap-8 mb-20 sm:mb-32">
      {giftingTiers.map((tier, index) => {
       const Icon = tier.icon;
       return (
        <div
         key={index}
-        className="gifting-card bg-[#111111] border border-[#1C1A16] p-10 hover:border-[#C9A84C]/30 transition-colors group"
+        className="gifting-card bg-[#111111] border border-[#1C1A16] p-6 sm:p-10 hover:border-[#C9A84C]/30 transition-colors group"
        >
         <Icon
          size={32}
          weight="light"
          className="text-[#C9A84C] mb-8 group-hover:-translate-y-1 transition-transform"
         />
-        <h3 className="font-display text-2xl mb-4 text-[#F5EDD6]">
+        <h3 className="font-display text-xl sm:text-2xl mb-4 text-[#F5EDD6]">
          {tier.title}
         </h3>
         <p className="font-ui text-sm text-[#9A9485] leading-relaxed">
@@ -163,7 +163,7 @@ export default function GiftingPage() {
     {/* CONCIERGE FORM */}
     <section
      id="concierge-form"
-     className="max-w-4xl mx-auto bg-[#0E0E0E] border border-[#C9A84C]/20 p-8 md:p-16"
+     className="max-w-4xl mx-auto bg-[#0E0E0E] border border-[#C9A84C]/20 p-6 sm:p-8 md:p-16"
     >
      <div className="text-center mb-12">
       <EnvelopeSimple
@@ -171,7 +171,9 @@ export default function GiftingPage() {
        className="text-[#C9A84C] mx-auto mb-6"
        weight="light"
       />
-      <h2 className="font-display text-4xl mb-4 italic">Gifting Concierge</h2>
+      <h2 className="font-display text-3xl sm:text-4xl mb-4 italic">
+       Gifting Concierge
+      </h2>
       <p className="font-ui text-[#9A9485] text-sm">
        Connect with our dedicated gifting team to curate your custom order. We
        typically respond within 24 hours.
@@ -179,18 +181,20 @@ export default function GiftingPage() {
      </div>
 
      {isSuccess ? (
-      <div className="text-center py-12 border border-dashed border-[#C9A84C]/30">
+      <div className="text-center py-10 sm:py-12 border border-dashed border-[#C9A84C]/30">
        <span className="font-ui text-[11px] tracking-[0.4em] uppercase text-[#C9A84C] mb-4 block">
         Inquiry Received
        </span>
-       <h3 className="font-display text-3xl text-[#F5EDD6]">Thank You.</h3>
+       <h3 className="font-display text-2xl sm:text-3xl text-[#F5EDD6]">
+        Thank You.
+       </h3>
        <p className="text-[#9A9485] mt-4">
         Our concierge team will be in touch shortly.
        </p>
       </div>
      ) : (
-      <form onSubmit={handleSubmit} className="space-y-8">
-       <div className="grid md:grid-cols-2 gap-8">
+      <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+       <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
         <FloatingInput
          label="Full Name"
          name="name"
@@ -205,7 +209,7 @@ export default function GiftingPage() {
          onChange={handleInputChange}
         />
        </div>
-       <div className="grid md:grid-cols-2 gap-8">
+       <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
         <FloatingInput
          label="Email Address"
          type="email"

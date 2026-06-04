@@ -100,7 +100,7 @@ export default function Home() {
 
  return (
   <main
-   className="bg-[#0A0A0A] min-h-screen text-[#F5EDD6] overflow-hidden"
+   className="bg-rein-black min-h-screen text-rein-cream overflow-hidden"
    suppressHydrationWarning
   >
    {/* SECTION 01: Navbar */}
@@ -112,21 +112,21 @@ export default function Home() {
     className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden"
    >
     {/* Particle Overlay Background (Simulated via CSS/radial here, integrate particles.js if preferred) */}
-    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#C9A84C]/5 via-[#0A0A0A]/0 to-[#0A0A0A]" />
+    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-rein-gold-primary/5 via-rein-black/0 to-rein-black" />
 
     <div className="max-w-7xl mx-auto px-6 w-full grid md:grid-cols-[55%_45%] gap-12 items-center relative z-10">
      {/* Left Stack */}
      <div ref={heroStackRef} className="flex flex-col items-start space-y-6">
-      <span className="hero-element font-ui font-medium text-[11px] tracking-[0.35em] text-[#C9A84C] uppercase">
+      <span className="hero-element font-ui font-medium text-[11px] tracking-[0.35em] text-rein-gold-primary uppercase">
        Crafted For The Discerning
       </span>
       <h1 className="hero-element font-display font-bold text-[clamp(56px,7vw,96px)] leading-[1.05]">
-       <span className="text-[#F5EDD6] block">The Gold Standard</span>
-       <span className="text-[#E8C97A] italic font-normal block">
+       <span className="text-rein-cream block">The Gold Standard</span>
+       <span className="text-rein-gold-light italic font-normal block">
         of Healthy Snacking.
        </span>
       </h1>
-      <p className="hero-element font-ui font-light text-[18px] text-[#9A9485] max-w-[480px] leading-relaxed">
+      <p className="hero-element font-ui font-light text-[18px] text-rein-gray-light max-w-[480px] leading-relaxed">
        Rein Oro brings you India's finest Makhana — roasted to perfection,
        seasoned with heritage, delivered to your door.
       </p>
@@ -134,14 +134,14 @@ export default function Home() {
       <div className="hero-element flex items-center gap-8 pt-4">
        <Link
         href="/shop"
-        className="bg-gradient-to-br from-[#C9A84C] to-[#E8C97A] text-[#0A0A0A] font-ui font-semibold text-[14px] tracking-[0.2em] uppercase px-10 py-4 rounded-sm hover:shadow-[0_0_40px_rgba(201,168,76,0.35)] hover:-translate-y-[2px] transition-all duration-300"
+        className="bg-gradient-to-br from-rein-gold-primary to-rein-gold-light text-rein-black font-ui font-semibold text-[14px] tracking-[0.2em] uppercase px-10 py-4 rounded-sm hover:shadow-[0_0_40px_rgba(201,168,76,0.35)] hover:-translate-y-[2px] transition-all duration-300"
         suppressHydrationWarning
        >
         Explore Collection
        </Link>
        <Link
         href="/our-story"
-        className="font-ui text-[14px] text-[#9A9485] hover:text-[#C9A84C] transition-colors group flex items-center gap-2"
+        className="font-ui text-[14px] text-rein-gray-light hover:text-rein-gold-primary transition-colors group flex items-center gap-2"
         suppressHydrationWarning
        >
         Watch Our Story{" "}
@@ -154,9 +154,9 @@ export default function Home() {
 
      {/* Right Product Podium */}
      <div className="hero-element relative flex justify-center items-center">
-      <div className="absolute w-[600px] h-[600px] bg-[#C9A84C]/10 rounded-full blur-[100px] -z-10" />
-      <div className="w-[400px] h-[400px] lg:w-[500px] lg:h-[500px] rounded-full p-[2px] bg-gradient-to-br from-[#C9A84C] to-[#8A6F32] animate-float relative shadow-[0_0_80px_rgba(201,168,76,0.15)]">
-       <div className="w-full h-full bg-[#1C1A16] rounded-full overflow-hidden relative border-[4px] border-[#1C1A16]">
+      <div className="absolute w-[600px] h-[600px] bg-rein-gold-primary/10 rounded-full blur-[100px] -z-10" />
+      <div className="w-[400px] h-[400px] lg:w-[500px] lg:h-[500px] rounded-full p-[2px] bg-gradient-to-br from-rein-gold-primary to-rein-gold-dim animate-float relative shadow-[0_0_80px_rgba(201,168,76,0.15)]">
+       <div className="w-full h-full bg-rein-surface rounded-full overflow-hidden relative border-[4px] border-rein-surface">
         <Image
          src="/images/hero_image.png"
          alt="Premium Makhana"
@@ -170,18 +170,18 @@ export default function Home() {
     </div>
 
     {/* Scroll Indicator */}
-    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[#9A9485] opacity-60">
+    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-rein-gray-light opacity-60">
      <span className="font-ui text-[10px] uppercase tracking-[0.2em]">
       Scroll to Discover
      </span>
-     <ArrowDown size={16} className="animate-bounce text-[#C9A84C]" />
+     <ArrowDown size={16} className="animate-bounce text-rein-gold-primary" />
     </div>
    </section>
 
    {/* SECTION 03: TRUST BAR */}
-   <div className="w-full bg-[#1C1A16] border-y border-[#C9A84C]/20 overflow-hidden py-4">
+   <div className="w-full bg-rein-surface border-y border-rein-gold-primary/20 overflow-hidden py-4">
     <div className="flex w-[200%] animate-marquee">
-     <div className="flex-1 flex justify-around items-center font-ui font-medium text-[13px] tracking-[0.2em] uppercase text-[#9A9485]">
+     <div className="flex-1 flex justify-around items-center font-ui font-medium text-[13px] tracking-[0.2em] uppercase text-rein-gray-light">
       <span>✦ 100% Natural</span>
       <span>✦ No Preservatives</span>
       <span>✦ Cold-Pressed Oils</span>
@@ -202,19 +202,22 @@ export default function Home() {
    </div>
 
    {/* SECTION 04: FEATURED COLLECTION */}
-   <section ref={featuresRef} className="py-32 px-6 max-w-7xl mx-auto">
-    <div className="text-center mb-16">
+   <section
+    ref={featuresRef}
+    className="py-20 sm:py-32 px-4 sm:px-6 max-w-7xl mx-auto"
+   >
+    <div className="text-center mb-10 sm:mb-16">
      <span className="text-[#C9A84C] font-ui font-medium text-[11px] tracking-[0.4em] uppercase mb-4 block">
       Our Collection
      </span>
-     <h2 className="font-display font-bold text-[42px] md:text-[52px] text-[#F5EDD6]">
+     <h2 className="font-display font-bold text-[32px] sm:text-[42px] md:text-[52px] text-[#F5EDD6]">
       Flavors Worthy of the Crown
      </h2>
     </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
      {/* Card 1 */}
-     <div className="featured-card pointer-events-none">
+     <div className="featured-card h-full">
       <ProductCard
        product={{
         id: 1,
@@ -229,7 +232,7 @@ export default function Home() {
      </div>
 
      {/* Card 2 */}
-     <div className="featured-card pointer-events-none">
+     <div className="featured-card h-full">
       <ProductCard
        product={{
         id: 2,
@@ -244,7 +247,7 @@ export default function Home() {
      </div>
 
      {/* Card 3 */}
-     <div className="featured-card pointer-events-none">
+     <div className="featured-card h-full">
       <ProductCard
        product={{
         id: 3,
@@ -259,7 +262,7 @@ export default function Home() {
      </div>
 
      {/* Card 4 */}
-     <div className="featured-card pointer-events-none">
+     <div className="featured-card h-full">
       <ProductCard
        product={{
         id: 4,
@@ -277,7 +280,7 @@ export default function Home() {
     <div className="mt-16 text-center">
      <Link
       href="/shop"
-      className="font-ui font-medium text-[13px] tracking-[0.2em] uppercase text-[#C9A84C] hover:border-b hover:border-[#C9A84C] pb-1 transition-all"
+      className="font-ui font-medium text-[12px] sm:text-[13px] tracking-[0.2em] uppercase text-[#C9A84C] hover:border-b hover:border-[#C9A84C] pb-1 transition-all"
       suppressHydrationWarning
      >
       View All Products →
@@ -381,34 +384,35 @@ export default function Home() {
    </section>
 
    {/* SECTION 06: BESTSELLERS SWIPER */}
-   <section className="py-32 px-6 overflow-hidden">
-    <div className="max-w-7xl mx-auto mb-16 flex flex-col items-center text-center">
+   <section className="py-20 sm:py-32 px-4 sm:px-6 overflow-hidden">
+    <div className="max-w-7xl mx-auto mb-10 sm:mb-16 flex flex-col items-center text-center">
      <span className="text-[#C9A84C] font-ui font-medium text-[11px] tracking-[0.4em] uppercase mb-4 block">
       Bestsellers
      </span>
-     <h2 className="font-display font-bold text-[42px] md:text-[52px] text-[#F5EDD6]">
+     <h2 className="font-display font-bold text-[32px] sm:text-[42px] md:text-[52px] text-[#F5EDD6]">
       What Everyone's Ordering
      </h2>
     </div>
 
-    <div className="max-w-[1400px] mx-auto px-6 cursor-grab active:cursor-grabbing">
+    <div className="max-w-[1400px] mx-auto px-0 sm:px-6 cursor-grab active:cursor-grabbing">
      <Swiper
       modules={[Autoplay, Pagination, Navigation]}
-      spaceBetween={24}
-      slidesPerView={1.2}
+      spaceBetween={16}
+      slidesPerView={1.05}
       navigation={true}
       breakpoints={{
-       640: { slidesPerView: 2.2 },
-       1024: { slidesPerView: 3.5 },
+       640: { slidesPerView: 2.1, spaceBetween: 20 },
+       1024: { slidesPerView: 3.2, spaceBetween: 24 },
+       1280: { slidesPerView: 3.5, spaceBetween: 24 },
       }}
       loop={true}
       autoplay={{ delay: 3500, disableOnInteraction: false }}
       pagination={{ clickable: true, dynamicBullets: true }}
-      className="pb-16 product-swiper"
+      className="pb-12 sm:pb-16 product-swiper"
      >
       {/* Card 1 */}
       <SwiperSlide>
-       <div className="pointer-events-none">
+       <div className="h-full">
         <ProductCard
          product={{
           id: 1,
@@ -425,7 +429,7 @@ export default function Home() {
 
       {/* Card 2 */}
       <SwiperSlide>
-       <div className="pointer-events-none">
+       <div className="pointer-events-none h-full">
         <ProductCard
          product={{
           id: 2,
@@ -442,7 +446,7 @@ export default function Home() {
 
       {/* Card 3 */}
       <SwiperSlide>
-       <div className="pointer-events-none">
+       <div className="pointer-events-none h-full">
         <ProductCard
          product={{
           id: 3,
@@ -459,7 +463,7 @@ export default function Home() {
 
       {/* Card 4 */}
       <SwiperSlide>
-       <div className="pointer-events-none">
+       <div className="pointer-events-none h-full">
         <ProductCard
          product={{
           id: 4,
@@ -476,7 +480,7 @@ export default function Home() {
 
       {/* Card 5 */}
       <SwiperSlide>
-       <div className="pointer-events-none">
+       <div className="pointer-events-none h-full">
         <ProductCard
          product={{
           id: 5,

@@ -83,7 +83,7 @@ export default function ManageAddresses() {
  if (loading) return <div className="text-[#9A9485] p-8">Loading...</div>;
 
  return (
-  <div className="pt-32 min-h-screen max-w-4xl mx-auto px-6 pb-24 relative z-10">
+  <div className="pt-24 sm:pt-32 min-h-screen max-w-4xl mx-auto px-4 sm:px-6 pb-20 sm:pb-24 relative z-10">
    <div className="space-y-8 animate-in fade-in duration-300">
     <Link
      href="/account/profile"
@@ -92,19 +92,19 @@ export default function ManageAddresses() {
      <ArrowLeft size={16} /> Back to Profile
     </Link>
 
-    <h2 className="text-2xl font-display text-[#F5EDD6] italic">
+    <h2 className="text-xl sm:text-2xl font-display text-[#F5EDD6] italic">
      Manage Addresses
     </h2>
 
     {/* Form */}
     <form
      onSubmit={saveAddress}
-     className="relative z-20 grid grid-cols-2 gap-4 p-6 bg-[#111111] border border-[#1C1A16]"
+     className="relative z-20 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 sm:p-6 bg-[#111111] border border-[#1C1A16]"
     >
      <input
       placeholder="Address Line 1"
       value={form.line1}
-      className="col-span-2 bg-[#0A0A0A] border border-[#1C1A16] p-3 text-[#F5EDD6] focus:border-[#C9A84C] outline-none"
+      className="sm:col-span-2 bg-[#0A0A0A] border border-[#1C1A16] p-3 text-[#F5EDD6] focus:border-[#C9A84C] outline-none"
       required
       onChange={(e) => setForm({ ...form, line1: e.target.value })}
      />
@@ -125,13 +125,13 @@ export default function ManageAddresses() {
      <input
       placeholder="Pincode"
       value={form.pincode}
-      className="col-span-2 bg-[#0A0A0A] border border-[#1C1A16] p-3 text-[#F5EDD6] focus:border-[#C9A84C] outline-none"
+      className="sm:col-span-2 bg-[#0A0A0A] border border-[#1C1A16] p-3 text-[#F5EDD6] focus:border-[#C9A84C] outline-none"
       required
       onChange={(e) => setForm({ ...form, pincode: e.target.value })}
      />
      <button
       type="submit"
-      className="col-span-2 bg-[#C9A84C] py-3 uppercase text-xs font-bold hover:bg-[#E8C97A] transition-colors"
+      className="sm:col-span-2 bg-[#C9A84C] py-3 uppercase text-xs font-bold hover:bg-[#E8C97A] transition-colors"
      >
       {editingIndex !== null ? "Update Address" : "Save New Address"}
      </button>
@@ -151,7 +151,7 @@ export default function ManageAddresses() {
      {addresses.map((addr, i) => (
       <div
        key={i}
-       className={`p-6 border ${addr.isDefault ? "border-[#C9A84C]" : "border-[#1C1A16]"} bg-[#111111] flex justify-between items-center`}
+       className={`p-4 sm:p-6 border ${addr.isDefault ? "border-[#C9A84C]" : "border-[#1C1A16]"} bg-[#111111] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4`}
       >
        <div>
         <p className="text-[#F5EDD6] text-sm">{addr.line1}</p>
@@ -164,7 +164,7 @@ export default function ManageAddresses() {
          </span>
         )}
        </div>
-       <div className="flex gap-4">
+       <div className="flex flex-wrap gap-4">
         {!addr.isDefault && (
          <button
           onClick={() => setPrimary(i)}

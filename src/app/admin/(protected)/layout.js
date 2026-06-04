@@ -44,7 +44,7 @@ export default function AdminLayout({ children }) {
 
  if (loading) {
   return (
-   <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
+   <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center px-6">
     <div className="text-[#C9A84C] tracking-[0.4em] text-[11px] uppercase animate-pulse">
      Verifying Security Clearances...
     </div>
@@ -67,7 +67,7 @@ export default function AdminLayout({ children }) {
  return (
   <div className="min-h-screen bg-[#0A0A0A] text-[#F5EDD6] flex flex-col">
    {/* Admin Header Bar */}
-   <header className="w-full bg-[#111111] border-b border-[#1C1A16] px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+   <header className="w-full bg-[#111111] border-b border-[#1C1A16] px-4 sm:px-8 py-4 flex items-center justify-between sticky top-0 z-30">
     <Link
      href="/admin/dashboard"
      className="font-display text-xl font-bold tracking-tight text-white"
@@ -85,17 +85,17 @@ export default function AdminLayout({ children }) {
     </button>
    </header>
 
-   <div className="flex flex-1">
+   <div className="flex flex-1 flex-col md:flex-row">
     {/* Navigation Sidebar */}
-    <aside className="w-64 bg-[#0E0E0E] border-r border-[#1C1A16] hidden md:block pt-8 px-4 shrink-0">
-     <nav className="space-y-2 font-ui text-[12px] uppercase tracking-widest">
+    <aside className="w-full md:w-64 bg-[#0E0E0E] border-b md:border-b-0 md:border-r border-[#1C1A16] block pt-4 md:pt-8 px-4 shrink-0">
+     <nav className="flex md:block gap-2 md:space-y-2 font-ui text-[11px] sm:text-[12px] uppercase tracking-widest overflow-x-auto md:overflow-visible pb-2 md:pb-0">
       {links.map((link) => {
        const isActive = pathname.startsWith(link.path);
        return (
         <Link
          key={link.path}
          href={link.path}
-         className={`flex items-center px-4 py-3 rounded-sm transition-all duration-200 ${
+         className={`flex items-center whitespace-nowrap px-4 py-3 rounded-sm transition-all duration-200 ${
           isActive
            ? "bg-[#1C1A16] text-[#C9A84C] border-l-2 border-[#C9A84C] font-semibold"
            : "text-[#9A9485] hover:text-[#F5EDD6] hover:bg-[#111]"
@@ -105,7 +105,7 @@ export default function AdminLayout({ children }) {
         </Link>
        );
       })}
-      <div className="pt-6 mt-6 border-t border-[#1C1A16]">
+      <div className="pt-4 md:pt-6 mt-4 md:mt-6 border-t border-[#1C1A16] w-full md:w-auto">
        <Link
         href="/"
         target="_blank"
@@ -118,7 +118,7 @@ export default function AdminLayout({ children }) {
     </aside>
 
     {/* Dynamic View Viewport */}
-    <main className="flex-grow p-8 overflow-x-hidden animate-in fade-in duration-300">
+    <main className="flex-grow p-4 sm:p-6 lg:p-8 overflow-x-hidden animate-in fade-in duration-300">
      {children}
     </main>
    </div>

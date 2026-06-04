@@ -15,23 +15,23 @@ export default function ContactPage() {
  };
 
  return (
-  <main className="bg-[#0A0A0A] min-h-screen text-[#F5EDD6]">
+  <main className="bg-[#0A0A0A] min-h-screen text-[#F5EDD6] overflow-hidden">
    <Navbar />
 
    {/* Decorative Background Glow */}
-   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[500px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#C9A84C]/10 via-transparent to-transparent pointer-events-none" />
+   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[320px] sm:h-[500px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#C9A84C]/10 via-transparent to-transparent pointer-events-none" />
 
-   <div className="max-w-7xl mx-auto px-6 py-32 relative z-10">
-    <div className="grid lg:grid-cols-[1fr_1.2fr] gap-20 items-start">
+   <div className="max-w-7xl mx-auto px-4 sm:px-6 py-24 sm:py-32 relative z-10">
+    <div className="grid lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-20 items-start">
      {/* Left Column: The Concierge / Info */}
-     <div className="lg:sticky lg:top-32 pr-8">
+     <div className="lg:sticky lg:top-32 pr-0 lg:pr-8">
       <span className="text-[#C9A84C] tracking-[0.4em] uppercase text-[11px] mb-6 block font-medium">
        Private Concierge
       </span>
-      <h1 className="font-display text-[clamp(40px,5vw,64px)] leading-[1.05] mb-8">
+      <h1 className="font-display text-[clamp(34px,8vw,64px)] leading-[1.05] mb-6 sm:mb-8">
        At Your <br /> <span className="italic text-[#E8C97A]">Service.</span>
       </h1>
-      <p className="text-[#9A9485] text-[16px] leading-[1.9] font-ui font-light mb-12 max-w-md">
+      <p className="text-[#9A9485] text-[15px] sm:text-[16px] leading-[1.9] font-ui font-light mb-10 sm:mb-12 max-w-md">
        Whether you are inquiring about corporate gifting, wholesale
        partnerships, or require assistance with an existing order, our dedicated
        concierge is here to assist you with uncompromising care.
@@ -48,9 +48,12 @@ export default function ContactPage() {
      </div>
 
      {/* Right Column: Minimalist Form */}
-     <div className="bg-[#111111] border border-[#1C1A16] p-10 md:p-16">
-      <form className="space-y-12" onSubmit={(e) => e.preventDefault()}>
-       <div className="grid md:grid-cols-2 gap-12">
+     <div className="bg-[#111111] border border-[#1C1A16] p-6 sm:p-10 md:p-16">
+      <form
+       className="space-y-10 sm:space-y-12"
+       onSubmit={(e) => e.preventDefault()}
+      >
+       <div className="grid md:grid-cols-2 gap-8 sm:gap-12">
         <FloatingInput
          label="Full Name"
          name="name"

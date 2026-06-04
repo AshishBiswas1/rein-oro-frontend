@@ -4,27 +4,27 @@ import Image from "next/image";
 
 export default function Footer() {
  return (
-  <footer className="bg-rein-black border-t border-rein-gold-primary/20 pt-16">
+  <footer className="bg-rein-black border-t border-rein-gold-primary/20 pt-12 sm:pt-16">
    {/* Newsletter Bar */}
-   <div className="max-w-7xl mx-auto px-6 pb-16 border-b border-rein-gold-dim/10">
-    <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+   <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-16 border-b border-rein-gold-dim/10">
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 sm:gap-8">
      <div>
-      <h3 className="font-display text-3xl text-rein-cream mb-2">
+      <h3 className="font-display text-2xl sm:text-3xl text-rein-cream mb-2">
        Join the Inner Circle
       </h3>
       <p className="font-ui text-rein-gray-light text-sm">
        Exclusive offers, early access to flavors, and brand stories.
       </p>
      </div>
-     <div className="w-full md:w-auto flex">
+     <div className="w-full md:w-auto flex flex-col sm:flex-row">
       <input
        type="email"
        placeholder="Your email address"
        suppressHydrationWarning
-       className="bg-transparent border border-rein-gold-dim/30 text-rein-cream font-ui px-6 py-3 w-full md:w-80 focus:outline-none focus:border-rein-gold-primary transition-colors"
+       className="bg-transparent border border-rein-gold-dim/30 text-rein-cream font-ui px-4 sm:px-6 py-3 w-full md:w-80 focus:outline-none focus:border-rein-gold-primary transition-colors"
       />
       <button
-       className="bg-rein-gold-primary text-rein-black font-ui font-semibold uppercase tracking-wider px-8 hover:bg-rein-gold-light transition-colors"
+       className="bg-rein-gold-primary text-rein-black font-ui font-semibold uppercase tracking-wider px-8 py-3 hover:bg-rein-gold-light transition-colors"
        suppressHydrationWarning
       >
        Subscribe
@@ -34,7 +34,7 @@ export default function Footer() {
    </div>
 
    {/* 4-Column Footer */}
-   <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+   <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
     <div className="flex flex-col space-y-4">
      <Link href="/" className="inline-block mb-2" suppressHydrationWarning>
       <Image
@@ -42,8 +42,8 @@ export default function Footer() {
        alt="Rein Oro Logo"
        width={140}
        height={45}
-       style={{ width: "140px", height: "auto" }} // <-- This handles the sizing completely
-       className="object-contain opacity-90 hover:opacity-100 transition-opacity" // <-- Removed w-[140px] and h-auto
+       className="w-[110px] sm:w-[140px] object-contain opacity-90 hover:opacity-100 transition-opacity" // <-- Responsive default: mobile 110px
+       
       />
      </Link>
      <p className="font-ui text-rein-gray-light text-sm">
@@ -163,7 +163,7 @@ export default function Footer() {
 
    {/* Bottom Bar */}
    <div className="bg-[#050505] py-6 border-t border-rein-gold-dim/10">
-    <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs font-ui text-rein-gray-mid">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center text-xs font-ui text-rein-gray-mid gap-3">
      <p>© {new Date().getFullYear()} Rein Oro. All rights reserved.</p>
      <div className="flex space-x-4 mt-4 md:mt-0">
       <span>Secure Checkout</span>
