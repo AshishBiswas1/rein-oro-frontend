@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
  return (
@@ -22,7 +23,10 @@ export default function Footer() {
        suppressHydrationWarning
        className="bg-transparent border border-rein-gold-dim/30 text-rein-cream font-ui px-6 py-3 w-full md:w-80 focus:outline-none focus:border-rein-gold-primary transition-colors"
       />
-      <button className="bg-rein-gold-primary text-rein-black font-ui font-semibold uppercase tracking-wider px-8 hover:bg-rein-gold-light transition-colors">
+      <button
+       className="bg-rein-gold-primary text-rein-black font-ui font-semibold uppercase tracking-wider px-8 hover:bg-rein-gold-light transition-colors"
+       suppressHydrationWarning
+      >
        Subscribe
       </button>
      </div>
@@ -32,11 +36,15 @@ export default function Footer() {
    {/* 4-Column Footer */}
    <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
     <div className="flex flex-col space-y-4">
-     <Link
-      href="/"
-      className="font-display text-3xl font-bold tracking-tight text-rein-cream"
-     >
-      REIN ORO
+     <Link href="/" className="inline-block mb-2" suppressHydrationWarning>
+      <Image
+       src="/images/logo.PNG"
+       alt="Rein Oro Logo"
+       width={140}
+       height={45}
+       style={{ width: "140px", height: "auto" }} // <-- This handles the sizing completely
+       className="object-contain opacity-90 hover:opacity-100 transition-opacity" // <-- Removed w-[140px] and h-auto
+      />
      </Link>
      <p className="font-ui text-rein-gray-light text-sm">
       Premium Dry Fruits & Makhana.
@@ -54,6 +62,7 @@ export default function Footer() {
        <Link
         href="/products"
         className="hover:text-rein-gold-primary transition-colors"
+        suppressHydrationWarning
        >
         All Products
        </Link>
@@ -62,6 +71,7 @@ export default function Footer() {
        <Link
         href="/products?filter=bestsellers"
         className="hover:text-rein-gold-primary transition-colors"
+        suppressHydrationWarning
        >
         Bestsellers
        </Link>
@@ -70,6 +80,7 @@ export default function Footer() {
        <Link
         href="/products?filter=gifts"
         className="hover:text-rein-gold-primary transition-colors"
+        suppressHydrationWarning
        >
         Gift Hampers
        </Link>
@@ -86,6 +97,7 @@ export default function Footer() {
        <Link
         href="/about"
         className="hover:text-rein-gold-primary transition-colors"
+        suppressHydrationWarning
        >
         Our Story
        </Link>
@@ -94,6 +106,7 @@ export default function Footer() {
        <Link
         href="/contact"
         className="hover:text-rein-gold-primary transition-colors"
+        suppressHydrationWarning
        >
         Contact
        </Link>
@@ -102,6 +115,7 @@ export default function Footer() {
        <Link
         href="/bulk"
         className="hover:text-rein-gold-primary transition-colors"
+        suppressHydrationWarning
        >
         Bulk Orders
        </Link>
@@ -114,28 +128,33 @@ export default function Footer() {
       Support
      </h4>
      <ul className="space-y-3 font-ui text-sm text-rein-gray-light">
+      {/* <-- SINGLE CONSOLIDATED POLICY LINK --> */}
       <li>
        <Link
         href="/policies/shipping"
         className="hover:text-rein-gold-primary transition-colors"
+        suppressHydrationWarning
        >
-        Shipping Policy
-       </Link>
-      </li>
-      <li>
-       <Link
-        href="/policies/returns"
-        className="hover:text-rein-gold-primary transition-colors"
-       >
-        Return Policy
+        Legal & Policies
        </Link>
       </li>
       <li>
        <Link
         href="/account/orders"
         className="hover:text-rein-gold-primary transition-colors"
+        suppressHydrationWarning
        >
         Track Order
+       </Link>
+      </li>
+      {/* Added FAQ to keep the column balanced */}
+      <li>
+       <Link
+        href="/faq"
+        className="hover:text-rein-gold-primary transition-colors"
+        suppressHydrationWarning
+       >
+        FAQ
        </Link>
       </li>
      </ul>

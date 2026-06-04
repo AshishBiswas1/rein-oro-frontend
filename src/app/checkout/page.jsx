@@ -1,313 +1,646 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useCartStore } from "../../store/useCartStore";
-import { CaretLeft, LockKey, CheckCircle } from "phosphor-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { CaretRight, LockKey } from "phosphor-react";
+import { useCartStore } from "@/store/useCartStore";
+
+// <-- Firebase Imports -->
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+
+// Utility to inject the Razorpay SDK seamlessly into the browser
+const loadRazorpayScript = () => {
+ return new Promise((resolve) => {
+  const script = document.createElement("script");
+  script.src = "https://checkout.razorpay.com/v1/checkout.js";
+  script.onload = () => resolve(true);
+  script.onerror = () => resolve(false);
+  document.body.appendChild(script);
+ });
+};
 
 export default function CheckoutPage() {
- const { cart, getCartSubtotal, clearCart } = useCartStore();
- const [step, setStep] = useState(1);
- const [isProcessing, setIsProcessing] = useState(false);
- const [mounted, setMounted] = useState(false);
+ const router = useRouter();
+ const [isMounted, setIsMounted] = useState(false);
+ const [loadingAuth, setLoadingAuth] = useState(true);
 
- const [customer, setCustomer] = useState({
+ const [step, setStep] = useState(1); // 1: Delivery, 2: Payment, 3: Confirmation
+ const [isProcessing, setIsProcessing] = useState(false);
+ const [orderId, setOrderId] = useState("");
+
+ // Cart State
+ const cart = useCartStore((state) => state.cart);
+ const getCartSubtotal = useCartStore((state) => state.getCartSubtotal);
+
+ // Safely extract the primitive function pointer
+ const storeClearCart = useCartStore((state) => state.clearCart);
+
+ // Wrap it in a safe operational handler
+ const clearCart = () => {
+  if (storeClearCart) {
+   storeClearCart();
+  } else {
+   console.warn("clearCart action is not implemented in useCartStore yet.");
+  }
+ };
+
+ // Form State
+ const [formData, setFormData] = useState({
   firstName: "",
   lastName: "",
   email: "",
-  contact: "9999999999",
+  phone: "",
+  address1: "",
+  address2: "",
+  pincode: "",
+  city: "",
+  state: "",
  });
 
- const subtotal = getCartSubtotal();
- const shippingFee = subtotal >= 599 || subtotal === 0 ? 0 : 50;
- const total = subtotal + shippingFee;
+ // GSAP Refs
+ const checkmarkRef = useRef(null);
+ const confirmationRef = useRef(null);
 
+ // <-- COMBINED AUTH & MOUNT EFFECT -->
  useEffect(() => {
-  setMounted(true);
+  setIsMounted(true);
 
-  // Check if we just returned from a successful Stripe checkout
-  const query = new URLSearchParams(window.location.search);
-  if (query.get("success")) {
-   setStep(3); // Jump straight to confirmation
-   clearCart();
-  }
-  if (query.get("canceled")) {
-   alert("Payment was canceled. You can try again.");
-   setStep(2); // Keep them on the payment step
-  }
- }, [clearCart]);
+  const unsubscribe = auth.onAuthStateChanged(async (user) => {
+   if (!user) {
+    // KICK UNLOGGED USERS OUT IMMEDIATELY
+    router.push("/account");
+    return;
+   }
 
+   // If logged in, fetch data to auto-fill the form
+   try {
+    const docRef = doc(db, "customers", user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+     const profile = docSnap.data();
+     const defaultAddress =
+      profile.addresses?.find((a) => a.isDefault) ||
+      profile.addresses?.[0] ||
+      {};
+
+     setFormData((prev) => ({
+      ...prev,
+      firstName: profile.name?.split(" ")[0] || "",
+      lastName: profile.name?.split(" ").slice(1).join(" ") || "",
+      email: profile.email || user.email,
+      phone: profile.phone || "",
+      address1: defaultAddress.line1 || "",
+      address2: defaultAddress.line2 || "",
+      city: defaultAddress.city || "",
+      state: defaultAddress.state || "",
+      pincode: defaultAddress.pincode || "",
+     }));
+    }
+   } catch (error) {
+    console.error("Error fetching customer data:", error);
+   } finally {
+    setLoadingAuth(false);
+   }
+  });
+
+  return () => unsubscribe();
+ }, [router]);
+
+ // <-- EMPTY CART REDIRECT CHECK -->
  useEffect(() => {
-  if (step === 3) {
-   gsap.fromTo(
-    ".success-check",
-    { scale: 0, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.7)" },
-   );
+  if (!loadingAuth && isMounted && cart.length === 0 && step !== 3) {
+   router.push("/shop");
+  }
+ }, [cart, loadingAuth, isMounted, router, step]);
+
+ // Safe Math
+ const subtotal = isMounted ? getCartSubtotal() : 0;
+ const shipping = subtotal >= 599 || subtotal === 0 ? 0 : 99;
+ const total = subtotal + shipping;
+
+ // Final Step GSAP Animation
+ useGSAP(() => {
+  if (step === 3 && checkmarkRef.current) {
+   const path = checkmarkRef.current.querySelector("path");
+   const length = path.getTotalLength();
+
+   gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+
+   const tl = gsap.timeline();
+   tl
+    .fromTo(
+     confirmationRef.current,
+     { opacity: 0, y: 30 },
+     { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+    )
+    .to(path, { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" });
   }
  }, [step]);
 
- const handleDeliverySubmit = (e) => {
-  e.preventDefault();
-  setStep(2);
- };
+ // Handlers
+ const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
 
- const handlePayment = async () => {
-  setIsProcessing(true);
-
-  try {
-   // 1. Call Node.js to create a Stripe Checkout Session
-   const response = await fetch(
-    "http://localhost:5000/api/checkout/create-order",
-    {
-     method: "POST",
-     headers: { "Content-Type": "application/json" },
-     body: JSON.stringify({ amount: total }),
-    },
-   );
-
-   const session = await response.json();
-
-   if (!response.ok) {
-    throw new Error(session.error || "Failed to create checkout session");
-   }
-
-   // 2. Redirect the browser directly to the secure Stripe URL
-   if (session.url) {
-    window.location.href = session.url;
-   } else {
-    throw new Error("No checkout URL returned from Stripe");
-   }
-  } catch (error) {
-   console.error("Checkout Error:", error);
-   alert("Something went wrong connecting to Stripe.");
-   setIsProcessing(false); // Only reset if it fails, otherwise let it redirect
+  // Simulated Pincode API Auto-fill
+  if (name === "pincode" && value.length === 6) {
+   // Replace with actual India Post API fetch
+   setTimeout(() => {
+    setFormData((prev) => ({
+     ...prev,
+     city: "Haridwar",
+     state: "Uttarakhand",
+    }));
+   }, 500);
   }
  };
 
- if (!mounted) return null;
+ const handleProceedToPayment = (e) => {
+  e.preventDefault();
+  setStep(2);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+ };
+
+ const handleRazorpayPayment = async () => {
+  setIsProcessing(true);
+
+  // 1. Load the SDK securely
+  const res = await loadRazorpayScript();
+  if (!res) {
+   alert("Payment gateway failed to load. Please check your connection.");
+   setIsProcessing(false);
+   return;
+  }
+
+  try {
+   // 2. Request a secure Order ID from your Next.js backend
+   const orderResponse = await fetch("/api/razorpay", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ amount: total }),
+   });
+
+   const orderData = await orderResponse.json();
+   if (!orderData.success) {
+    console.error("Razorpay API Server Error:", orderData.error);
+    throw new Error(orderData.error || "Failed to initialize order.");
+   }
+
+   // 3. Configure the Premium Overlay
+   const options = {
+    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    amount: orderData.order.amount,
+    currency: "INR",
+    name: "REIN ORO",
+    description: "Luxury Signature Blends",
+    image: "/logo.png",
+    order_id: orderData.order.id,
+    prefill: {
+     name: `${formData.firstName} ${formData.lastName}`,
+     email: formData.email,
+     contact: formData.phone,
+    },
+    theme: {
+     color: "#C9A84C",
+    },
+    handler: async function (response) {
+     try {
+      // Securely pull the current logged-in user's UID
+      const currentUserId = auth.currentUser ? auth.currentUser.uid : null;
+
+      if (!currentUserId) {
+       throw new Error("User session expired during checkout.");
+      }
+
+      // Call our new verification API
+      const result = await fetch("/api/order/verify", {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify({
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_signature: response.razorpay_signature,
+        userId: currentUserId,
+        cart: cart,
+        formData: formData,
+        total: total,
+        // --- ADDED THESE TWO LINES TO ENSURE DB GETS THE STATUS ---
+        orderStatus: "processing",
+        paymentStatus: "paid",
+       }),
+      });
+
+      if (result.ok) {
+       setOrderId(response.razorpay_payment_id);
+       setStep(3); // Move to confirmation
+       clearCart();
+       window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+       throw new Error("Order verification failed");
+      }
+     } catch (err) {
+      console.error("Order Commit Failed", err);
+      alert(
+       "Payment successful but order saving failed. Please contact support.",
+      );
+     } finally {
+      setIsProcessing(false);
+     }
+    },
+    modal: {
+     ondismiss: function () {
+      // User closed the overlay without paying
+      setIsProcessing(false);
+     },
+    },
+   };
+
+   const paymentObject = new window.Razorpay(options);
+   paymentObject.open();
+  } catch (error) {
+   console.error(error);
+   alert("An error occurred while opening the payment gateway.");
+   setIsProcessing(false);
+  }
+ };
+
+ // <-- ADDED AUTH BLOCKING UI -->
+ if (!isMounted || loadingAuth) {
+  return (
+   <main className="bg-[#0A0A0A] min-h-screen flex items-center justify-center">
+    <div className="text-[#C9A84C] tracking-[0.4em] text-[11px] uppercase animate-pulse">
+     Authenticating Vault Access...
+    </div>
+   </main>
+  );
+ }
 
  return (
-  <div className="min-h-screen bg-rein-black flex flex-col font-ui text-rein-cream relative z-10">
-   <header className="py-8 border-b border-rein-gold-dim/20 flex justify-center bg-rein-charcoal">
-    <Link
-     href="/"
-     className="font-display text-3xl font-bold tracking-widest uppercase"
-    >
-     REIN <span className="text-rein-gold-primary font-light">ORO</span>
-    </Link>
+  <main
+   className="bg-[#0A0A0A] min-h-screen text-[#F5EDD6] pt-32 pb-24"
+   suppressHydrationWarning
+  >
+   {/* Dynamic Progress Header */}
+   <header className="max-w-3xl mx-auto px-6 mb-16" suppressHydrationWarning>
+    <div className="flex items-center justify-center gap-4 font-ui text-[11px] tracking-[0.2em] uppercase font-medium">
+     <span
+      className={`${step >= 1 ? "text-[#C9A84C]" : "text-[#4A4640]"} transition-colors`}
+     >
+      Delivery
+     </span>
+     <div
+      className={`w-8 h-[1px] ${step >= 2 ? "bg-[#C9A84C]" : "bg-[#4A4640]"} transition-colors`}
+     />
+     <span
+      className={`${step >= 2 ? "text-[#C9A84C]" : "text-[#4A4640]"} transition-colors`}
+     >
+      Payment
+     </span>
+     <div
+      className={`w-8 h-[1px] ${step === 3 ? "bg-[#C9A84C]" : "bg-[#4A4640]"} transition-colors`}
+     />
+     <span
+      className={`${step === 3 ? "text-[#C9A84C]" : "text-[#4A4640]"} transition-colors`}
+     >
+      Confirmation
+     </span>
+    </div>
    </header>
 
-   <main className="flex-grow max-w-6xl mx-auto w-full px-6 py-12">
-    {/* Progress Bar */}
-    <div className="flex items-center justify-center space-x-4 mb-16">
-     <div
-      className={`text-sm tracking-widest uppercase ${step >= 1 ? "text-rein-gold-primary" : "text-rein-gray-mid"}`}
-     >
-      1. Delivery
-     </div>
-     <div
-      className={`w-12 h-[1px] ${step >= 2 ? "bg-rein-gold-primary" : "bg-rein-gray-mid"}`}
-     />
-     <div
-      className={`text-sm tracking-widest uppercase ${step >= 2 ? "text-rein-gold-primary" : "text-rein-gray-mid"}`}
-     >
-      2. Payment
-     </div>
-     <div
-      className={`w-12 h-[1px] ${step >= 3 ? "bg-rein-gold-primary" : "bg-rein-gray-mid"}`}
-     />
-     <div
-      className={`text-sm tracking-widest uppercase ${step === 3 ? "text-rein-gold-primary" : "text-rein-gray-mid"}`}
-     >
-      3. Confirmation
-     </div>
-    </div>
+   {/* Main Layout Grid */}
+   <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-[1fr_400px] gap-16 items-start">
+    {/* LEFT COLUMN: Dynamic Steps */}
+    <div className="w-full">
+     {/* STEP 1: DELIVERY */}
+     {step === 1 && (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+       <h2 className="font-display text-3xl text-[#F5EDD6] mb-8 italic">
+        Delivery Details
+       </h2>
+       <form onSubmit={handleProceedToPayment} className="space-y-8">
+        {/* Floating Label Grid */}
+        <div className="grid grid-cols-2 gap-8">
+         <FloatingInput
+          label="First Name"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleInputChange}
+          required
+         />
+         <FloatingInput
+          label="Last Name"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleInputChange}
+          required
+         />
+        </div>
 
-    <div
-     className={`grid grid-cols-1 ${step !== 3 ? "lg:grid-cols-[1fr_400px]" : ""} gap-16`}
-    >
-     <div className={step === 3 ? "max-w-2xl mx-auto w-full text-center" : ""}>
-      {/* STEP 1: DELIVERY FORM */}
-      {step === 1 && (
-       <form onSubmit={handleDeliverySubmit} className="space-y-6">
-        <h2 className="font-display text-3xl mb-8">Shipping Address</h2>
-        <div className="grid grid-cols-2 gap-6">
-         <input
-          required
-          type="text"
-          placeholder="First Name"
-          value={customer.firstName}
-          onChange={(e) =>
-           setCustomer({ ...customer, firstName: e.target.value })
-          }
-          className="col-span-1 bg-rein-surface border border-rein-gold-dim/30 px-5 py-4 focus:outline-none focus:border-rein-gold-primary transition-colors"
-         />
-         <input
-          required
-          type="text"
-          placeholder="Last Name"
-          value={customer.lastName}
-          onChange={(e) =>
-           setCustomer({ ...customer, lastName: e.target.value })
-          }
-          className="col-span-1 bg-rein-surface border border-rein-gold-dim/30 px-5 py-4 focus:outline-none focus:border-rein-gold-primary transition-colors"
-         />
-         <input
-          required
+        <div className="grid grid-cols-2 gap-8">
+         <FloatingInput
+          label="Email Address"
           type="email"
-          placeholder="Email Address"
-          value={customer.email}
-          onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-          className="col-span-2 bg-rein-surface border border-rein-gold-dim/30 px-5 py-4 focus:outline-none focus:border-rein-gold-primary transition-colors"
-         />
-         <input
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
           required
-          type="text"
-          placeholder="Address Line 1"
-          className="col-span-2 bg-rein-surface border border-rein-gold-dim/30 px-5 py-4 focus:outline-none focus:border-rein-gold-primary transition-colors"
          />
-         <input
+         <FloatingInput
+          label="Phone Number"
+          type="tel"
+          name="phone"
+          value={formData.phone}
+          onChange={handleInputChange}
           required
-          type="text"
-          placeholder="City"
-          className="col-span-1 bg-rein-surface border border-rein-gold-dim/30 px-5 py-4 focus:outline-none focus:border-rein-gold-primary transition-colors"
-         />
-         <input
-          required
-          type="text"
-          placeholder="Pincode"
-          className="col-span-1 bg-rein-surface border border-rein-gold-dim/30 px-5 py-4 focus:outline-none focus:border-rein-gold-primary transition-colors"
          />
         </div>
-        <div className="pt-6 flex items-center justify-between">
-         <Link
-          href="/"
-          className="flex items-center text-rein-gray-light hover:text-rein-gold-primary transition-colors"
-         >
-          <CaretLeft size={16} className="mr-2" /> Return to Store
-         </Link>
-         <button
-          type="submit"
-          className="bg-rein-gold-primary text-rein-black font-semibold uppercase tracking-widest px-10 py-4 hover:bg-rein-gold-light transition-colors"
-         >
-          Continue to Payment
-         </button>
-        </div>
-       </form>
-      )}
 
-      {/* STEP 2: STRIPE PAYMENT */}
-      {step === 2 && (
-       <div className="space-y-8">
-        <h2 className="font-display text-3xl mb-8">Secure Payment</h2>
-        <div className="bg-rein-surface border border-rein-gold-primary/30 p-8 text-center flex flex-col items-center">
-         <LockKey
-          size={48}
-          weight="light"
-          className="text-rein-gold-primary mb-4"
+        <FloatingInput
+         label="Address Line 1"
+         name="address1"
+         value={formData.address1}
+         onChange={handleInputChange}
+         required
+        />
+        <FloatingInput
+         label="Address Line 2 (Optional)"
+         name="address2"
+         value={formData.address2}
+         onChange={handleInputChange}
+        />
+
+        <div className="grid grid-cols-3 gap-8">
+         <FloatingInput
+          label="Pincode"
+          name="pincode"
+          value={formData.pincode}
+          onChange={handleInputChange}
+          required
+          maxLength={6}
          />
-         <h3 className="text-xl mb-2">Stripe Secure Checkout</h3>
-         <p className="text-rein-gray-light text-sm mb-8">
-          You will be redirected to Stripe to complete your purchase securely.
-         </p>
-         <button
-          onClick={handlePayment}
-          disabled={isProcessing}
-          className="w-full bg-rein-gold-primary text-rein-black font-semibold uppercase tracking-widest py-4 hover:bg-rein-gold-light transition-colors disabled:opacity-50"
-         >
-          {isProcessing ? "Connecting to Stripe..." : `Pay ₹${total}`}
-         </button>
+         <FloatingInput
+          label="City"
+          name="city"
+          value={formData.city}
+          onChange={handleInputChange}
+          required
+         />
+         <FloatingInput
+          label="State"
+          name="state"
+          value={formData.state}
+          onChange={handleInputChange}
+          required
+         />
         </div>
+
+        <button
+         type="submit"
+         className="w-full bg-gradient-to-br from-[#C9A84C] to-[#E8C97A] text-[#0A0A0A] font-ui font-semibold text-[13px] tracking-[0.2em] uppercase py-5 rounded-sm hover:shadow-[0_0_30px_rgba(201,168,76,0.25)] transition-all mt-8"
+         suppressHydrationWarning
+        >
+         Continue to Payment
+        </button>
+       </form>
+      </div>
+     )}
+
+     {/* STEP 2: PAYMENT */}
+     {step === 2 && (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+       <div className="flex items-center gap-3 mb-8">
         <button
          onClick={() => setStep(1)}
-         className="flex items-center text-rein-gray-light hover:text-rein-gold-primary transition-colors"
+         className="text-[#9A9485] hover:text-[#C9A84C] transition-colors"
+         suppressHydrationWarning
         >
-         <CaretLeft size={16} className="mr-2" /> Back to Shipping
+         <CaretRight size={20} className="rotate-180" />
+        </button>
+        <h2 className="font-display text-3xl text-[#F5EDD6] italic">
+         Secure Payment
+        </h2>
+       </div>
+
+       <div className="bg-[#141414] border border-[#C9A84C]/20 p-8 rounded-sm mb-8">
+        <div className="flex items-center justify-between mb-6">
+         <div className="flex items-center gap-2 text-[#F5EDD6]">
+          <LockKey size={20} className="text-[#C9A84C]" />
+          <span className="font-ui text-sm uppercase tracking-widest font-medium">
+           Razorpay Secure Checkout
+          </span>
+         </div>
+         <div className="flex gap-2 opacity-60">
+          <div className="w-8 h-5 bg-[#C9A84C] rounded-sm" />
+          <div className="w-8 h-5 bg-[#F5EDD6] rounded-sm" />
+         </div>
+        </div>
+        <p className="font-ui text-[13px] text-[#9A9485] leading-relaxed mb-8">
+         After clicking "Pay Now", you will be redirected to Razorpay to
+         complete your purchase securely. We accept all major Credit Cards, UPI,
+         and NetBanking.
+        </p>
+
+        <button
+         onClick={handleRazorpayPayment}
+         disabled={isProcessing}
+         className="w-full bg-gradient-to-br from-[#C9A84C] to-[#E8C97A] text-[#0A0A0A] font-ui font-semibold text-[13px] tracking-[0.2em] uppercase py-5 rounded-sm hover:shadow-[0_0_30px_rgba(201,168,76,0.25)] transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+         suppressHydrationWarning
+        >
+         {isProcessing ? "Initializing Secure Gateway..." : `Pay ₹${total}`}
         </button>
        </div>
-      )}
 
-      {/* STEP 3: CONFIRMATION */}
-      {step === 3 && (
-       <div className="flex flex-col items-center py-16">
-        <div className="success-check bg-rein-gold-primary/10 rounded-full p-6 mb-8">
-         <CheckCircle
-          size={80}
-          weight="fill"
-          className="text-rein-gold-primary"
-         />
-        </div>
-        <h2 className="font-display text-4xl mb-4">Order Confirmed</h2>
-        <p className="text-rein-gray-light mb-8">
-         Your luxury snack experience is being prepared. We have emailed you the
-         receipt.
+       {/* Delivery Summary Block */}
+       <div className="border border-[#4A4640] p-6 rounded-sm">
+        <h3 className="font-ui text-[11px] tracking-[0.2em] uppercase text-[#9A9485] mb-4">
+         Delivery To
+        </h3>
+        <p className="font-ui text-sm text-[#F5EDD6] leading-relaxed">
+         {formData.firstName} {formData.lastName}
+         <br />
+         {formData.address1}, {formData.address2 && `${formData.address2}, `}
+         {formData.city}, {formData.state} {formData.pincode}
+         <br />
+         {formData.phone}
         </p>
+       </div>
+      </div>
+     )}
+
+     {/* STEP 3: CONFIRMATION */}
+     {step === 3 && (
+      <div
+       ref={confirmationRef}
+       className="flex flex-col items-center justify-center text-center py-12"
+      >
+       <svg
+        ref={checkmarkRef}
+        width="120"
+        height="120"
+        viewBox="0 0 120 120"
+        className="mb-8"
+       >
+        <circle
+         cx="60"
+         cy="60"
+         r="50"
+         fill="none"
+         stroke="#C9A84C"
+         strokeWidth="2"
+         strokeDasharray="314"
+         strokeDashoffset="0"
+         className="opacity-20"
+        />
+        <path
+         d="M40 60 L55 75 L80 45"
+         fill="none"
+         stroke="#C9A84C"
+         strokeWidth="4"
+         strokeLinecap="round"
+         strokeLinejoin="round"
+        />
+       </svg>
+
+       <span className="font-ui text-[11px] tracking-[0.4em] uppercase text-[#C9A84C] mb-4 block">
+        Order Successful
+       </span>
+       <h2 className="font-display text-4xl md:text-5xl text-[#F5EDD6] mb-4 italic">
+        Thank You for Your Order.
+       </h2>
+       <p className="font-ui text-[16px] text-[#9A9485] mb-8">
+        Your luxury blend is being prepared. A confirmation email has been sent
+        to <span className="text-[#F5EDD6]">{formData.email}</span>.
+       </p>
+
+       <div className="font-ui border-y border-[#C9A84C]/20 py-6 mb-12 w-full max-w-md">
+        <span className="text-[#9A9485] text-xs uppercase tracking-widest block mb-2">
+         Order Number
+        </span>
+        <span className="font-accent text-3xl text-[#C9A84C] tracking-wider">
+         {orderId}
+        </span>
+       </div>
+
+       <div className="flex flex-col sm:flex-row gap-6 w-full max-w-md">
+        <button
+         className="flex-1 bg-[#1C1A16] border border-[#C9A84C]/30 text-[#F5EDD6] font-ui text-xs uppercase tracking-[0.2em] font-semibold py-4 hover:border-[#C9A84C] transition-colors rounded-sm"
+         suppressHydrationWarning
+        >
+         Download Invoice
+        </button>
         <Link
-         href="/"
-         className="bg-rein-surface border border-rein-gold-primary text-rein-gold-primary uppercase tracking-widest px-10 py-4 hover:bg-rein-gold-primary hover:text-rein-black transition-colors"
+         href="/shop"
+         className="flex-1 bg-[#C9A84C] text-[#0A0A0A] font-ui text-xs uppercase tracking-[0.2em] font-semibold py-4 flex items-center justify-center hover:bg-[#E8C97A] transition-colors rounded-sm"
+         suppressHydrationWarning
         >
          Continue Shopping
         </Link>
        </div>
-      )}
-     </div>
-
-     {/* RIGHT COLUMN: Order Summary */}
-     {step !== 3 && (
-      <div className="bg-rein-charcoal border border-rein-gold-dim/20 p-8 h-fit sticky top-8">
-       <h3 className="font-display text-2xl mb-6">Order Summary</h3>
-       <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2">
-        {cart.length === 0 ? (
-         <p className="text-rein-gray-light">Your cart is empty.</p>
-        ) : (
-         cart.map((item) => (
-          <div
-           key={`${item.id}-${item.selectedWeight}`}
-           className="flex justify-between items-center"
-          >
-           <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-rein-surface border border-rein-gold-dim/20 flex items-center justify-center text-[10px] text-rein-gray-mid">
-             Img
-            </div>
-            <div>
-             <p className="font-display italic text-lg">{item.name}</p>
-             <p className="text-rein-gray-light text-xs">
-              {item.selectedWeight} x {item.quantity}
-             </p>
-            </div>
-           </div>
-           <p className="font-accent text-rein-gold-primary">
-            ₹{item.price * item.quantity}
-           </p>
-          </div>
-         ))
-        )}
-       </div>
-       <div className="border-t border-rein-gold-dim/20 pt-6 space-y-4 text-sm text-rein-gray-light">
-        <div className="flex justify-between">
-         <span>Subtotal</span>
-         <span className="font-accent text-rein-cream">₹{subtotal}</span>
-        </div>
-        <div className="flex justify-between">
-         <span>Shipping</span>
-         <span className="font-accent text-rein-cream">
-          {shippingFee === 0 ? "FREE" : `₹${shippingFee}`}
-         </span>
-        </div>
-        <div className="border-t border-rein-gold-dim/20 pt-4 flex justify-between items-end">
-         <span className="text-rein-cream uppercase tracking-widest">
-          Total
-         </span>
-         <span className="font-accent text-3xl text-rein-gold-primary">
-          ₹{total}
-         </span>
-        </div>
-       </div>
       </div>
      )}
     </div>
-   </main>
+
+    {/* RIGHT COLUMN: Order Summary (Hidden on Confirmation Step) */}
+    {step !== 3 && (
+     <div className="bg-[#111] border border-[#C9A84C]/10 p-8 rounded-sm sticky top-32">
+      <h2 className="font-display text-2xl text-[#F5EDD6] italic mb-6">
+       Order Summary
+      </h2>
+
+      <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto scrollbar-thin pr-2">
+       {cart.map((item) => (
+        <div key={`${item._id}-${item.selectedWeight}`} className="flex gap-4">
+         <div className="w-16 h-16 bg-[#1C1A16] rounded-sm relative overflow-hidden shrink-0 border border-[#C9A84C]/10">
+          <Image
+           src={item.image}
+           alt={item.name}
+           fill
+           className="object-contain"
+          />
+         </div>
+         <div className="flex-1 flex flex-col justify-center">
+          <h3 className="font-display italic text-lg text-[#F5EDD6] leading-tight line-clamp-1">
+           {item.name}
+          </h3>
+          <p className="font-ui text-[11px] text-[#9A9485] uppercase tracking-wider">
+           {item.selectedWeight} × {item.quantity}
+          </p>
+         </div>
+         <div className="flex flex-col justify-center text-right">
+          <span className="font-accent text-[#C9A84C] font-semibold">
+           ₹{item.price * item.quantity}
+          </span>
+         </div>
+        </div>
+       ))}
+      </div>
+
+      <div className="border-t border-[#4A4640] pt-6 space-y-3 font-ui text-sm text-[#9A9485]">
+       <div className="flex justify-between">
+        <span>Subtotal</span>
+        <span className="text-[#F5EDD6]">₹{subtotal}</span>
+       </div>
+       <div className="flex justify-between">
+        <span>Vault Shipping</span>
+        <span className="text-[#F5EDD6]">
+         {shipping === 0 ? "Complimentary" : `₹${shipping}`}
+        </span>
+       </div>
+       <div className="flex justify-between items-end pt-4 border-t border-[#4A4640]">
+        <span className="text-base text-[#F5EDD6]">Total</span>
+        <span className="font-accent text-2xl text-[#C9A84C] font-bold">
+         ₹{total}
+        </span>
+       </div>
+      </div>
+     </div>
+    )}
+   </div>
+  </main>
+ );
+}
+
+// Reusable Floating Label Input Component
+function FloatingInput({
+ label,
+ name,
+ type = "text",
+ value,
+ onChange,
+ required,
+ maxLength,
+}) {
+ const [mounted, setMounted] = useState(false);
+ useEffect(() => setMounted(true), []);
+
+ return (
+  <div className="relative">
+   <input
+    id={name}
+    name={name}
+    type={type}
+    value={value}
+    onChange={onChange}
+    required={required}
+    maxLength={maxLength}
+    placeholder=" "
+    className="peer w-full bg-transparent border-b border-[#4A4640] text-[#F5EDD6] font-ui pt-5 pb-2 text-sm focus:outline-none focus:border-[#C9A84C] transition-colors placeholder-transparent"
+    suppressHydrationWarning
+   />
+   <label
+    htmlFor={name}
+    className="absolute left-0 text-[#9A9485] font-ui text-[10px] uppercase tracking-[0.2em] transition-all duration-300 pointer-events-none
+                   top-0 peer-placeholder-shown:top-5 peer-placeholder-shown:text-[13px] peer-placeholder-shown:tracking-wider
+                   peer-focus:top-0 peer-focus:text-[10px] peer-focus:tracking-[0.2em] peer-focus:text-[#C9A84C]"
+    suppressHydrationWarning
+   >
+    {label} {required && "*"}
+   </label>
   </div>
  );
 }

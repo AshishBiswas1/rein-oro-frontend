@@ -8,6 +8,8 @@
 
 # testing
 /coverage
+/src/app/api/test-db/*
+/src/app/seed/*
 
 # next.js
 /.next/

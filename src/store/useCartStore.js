@@ -1,76 +1,80 @@
-// frontend/src/store/useCartStore.js
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
-export const useCartStore = create(
- persist(
-  (set, get) => ({
-   cart: [],
-   isDrawerOpen: false,
+export const useCartStore = create((set, get) => ({
+ cart: [],
+ isDrawerOpen: false,
 
-   openDrawer: () => set({ isDrawerOpen: true }),
-   closeDrawer: () => set({ isDrawerOpen: false }),
-   toggleDrawer: () => set((state) => ({ isDrawerOpen: !state.isDrawerOpen })),
+ // UI Actions
+ toggleDrawer: () => set((state) => ({ isDrawerOpen: !state.isDrawerOpen })),
 
-   // Adds item and automatically opens the drawer
-   addItem: (item) =>
-    set((state) => {
-     const itemKey = `${item.id}-${item.selectedWeight}`;
-     const existingItemIndex = state.cart.findIndex(
-      (i) => `${i.id}-${i.selectedWeight}` === itemKey,
-     );
+ // Core Cart Operations
+ addToCart: (product) =>
+  set((state) => {
+   const dynamicQuantity = product.quantity || 1;
 
-     if (existingItemIndex > -1) {
-      const updatedCart = [...state.cart];
-      updatedCart[existingItemIndex].quantity += item.quantity || 1;
-      return { cart: updatedCart, isDrawerOpen: true };
-     }
+   // Match line item uniquely using both ID and variant weight selection
+   const existingItem = state.cart.find(
+    (item) =>
+     (item._id === product._id || item.id === product.id) &&
+     item.selectedWeight === product.selectedWeight,
+   );
 
-     return {
-      cart: [...state.cart, { ...item, quantity: item.quantity || 1 }],
-      isDrawerOpen: true,
-     };
-    }),
-
-   // Removes a specific item variant
-   removeItem: (id, weight) =>
-    set((state) => ({
-     cart: state.cart.filter(
-      (item) => !(item.id === id && item.selectedWeight === weight),
+   if (existingItem) {
+    return {
+     cart: state.cart.map((item) =>
+      (item._id === product._id || item.id === product.id) &&
+      item.selectedWeight === product.selectedWeight
+       ? { ...item, quantity: item.quantity + dynamicQuantity }
+       : item,
      ),
-    })),
-
-   // Increases or decreases quantity
-   updateQuantity: (id, weight, delta) =>
-    set((state) => {
-     const updatedCart = state.cart.map((item) => {
-      if (item.id === id && item.selectedWeight === weight) {
-       const nextQty = item.quantity + delta;
-       return { ...item, quantity: nextQty < 1 ? 1 : nextQty };
-      }
-      return item;
-     });
-     return { cart: updatedCart };
-    }),
-
-   // Empties the cart after checkout
-   clearCart: () => set({ cart: [] }),
-
-   // Calculates the total price of all items
-   getCartSubtotal: () => {
-    return get().cart.reduce(
-     (acc, item) => acc + item.price * item.quantity,
-     0,
-    );
-   },
-
-   // Counts total number of items for the Navbar bubble
-   getCartCount: () => {
-    return get().cart.reduce((acc, item) => acc + item.quantity, 0);
-   },
+    };
+   }
+   return { cart: [...state.cart, { ...product, quantity: dynamicQuantity }] };
   }),
-  {
-   name: "rein-oro-cart-storage", // Persists cart data in localStorage
-  },
- ),
-);
+
+ // Purges the entire target variant line item from the active cart array
+ removeItem: (id, selectedWeight) =>
+  set((state) => ({
+   cart: state.cart.filter(
+    (item) =>
+     !(
+      (item._id === id || item.id === id) &&
+      item.selectedWeight === selectedWeight
+     ),
+   ),
+  })),
+
+ // Modifies quantities up or down, filtering out item entirely if drops to 0
+ updateQuantity: (id, selectedWeight, delta) =>
+  set((state) => {
+   const updatedCart = state.cart.map((item) => {
+    if (
+     (item._id === id || item.id === id) &&
+     item.selectedWeight === selectedWeight
+    ) {
+     return { ...item, quantity: item.quantity + delta };
+    }
+    return item;
+   });
+
+   // Clean up fallback check: If an item drops below 1 quantity, automatically drop it from the array list
+   const filteredCart = updatedCart.filter((item) => item.quantity >= 1);
+
+   return { cart: filteredCart };
+  }),
+
+ // Instantly flushes the cart array after a successful checkout
+ clearCart: () => set({ cart: [] }),
+
+ // Structural Value Math Reducers
+ getCartCount: () => {
+  return get().cart.reduce((total, item) => total + item.quantity, 0);
+ },
+
+ getCartSubtotal: () => {
+  return get().cart.reduce(
+   (total, item) => total + item.price * item.quantity,
+   0,
+  );
+ },
+}));
