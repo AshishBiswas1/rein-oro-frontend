@@ -76,7 +76,7 @@ export async function POST(req) {
       </div>
       
       <br/>
-      <a href="${process.env.NEXT_PUBLIC_BASE_URL || "https://reinoro.com"}/account/profile" style="background: #C9A84C; color: #0A0A0A; padding: 15px 30px; text-decoration: none; text-transform: uppercase; letter-spacing: 0.2em; font-weight: bold; font-size: 11px; display: inline-block;">View Client Portal</a>
+      <a href="${process.env.NEXT_PUBLIC_BASE_URL}/account/profile" style="background: #C9A84C; color: #0A0A0A; padding: 15px 30px; text-decoration: none; text-transform: uppercase; letter-spacing: 0.2em; font-weight: bold; font-size: 11px; display: inline-block;">View Client Portal</a>
     </div>
    `,
   });
